@@ -403,8 +403,9 @@
   }
 #app-saju .my-saju-mini-grid {
     display: grid;
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: auto repeat(4,1fr);
     gap: 6px;
+    align-items: center;
   }
 #app-saju .my-saju-mini-col { text-align: center; }
 #app-saju .my-saju-mini-label {
@@ -415,6 +416,14 @@
   }
 #app-saju .my-saju-mini-gan { font-size: 19px; line-height: 1.25; font-weight: 700; }
 #app-saju .my-saju-mini-zhi { font-size: 19px; line-height: 1.25; font-weight: 700; }
+#app-saju .my-saju-mini-label-col {
+    display: flex; flex-direction: column; gap: 2px;
+    padding-top: 18px;
+  }
+#app-saju .my-saju-mini-label-col span {
+    font-size: 9.5px; color: var(--ink-soft); font-family: 'Pretendard', sans-serif;
+    height: 24px; display: flex; align-items: center;
+  }
 #app-saju .memo-area { padding: 16px 20px calc(20px + env(safe-area-inset-bottom)); }
 #app-saju .memo-area-inner { max-width: 640px; margin: 0 auto; }
 #app-saju .memo-label {
@@ -528,11 +537,19 @@
     background: none; border: none; color: var(--vermilion); font-size: 11.5px;
     font-family: 'Pretendard', sans-serif; cursor: pointer; padding: 4px 0;
   }
-#app-saju .pillars-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+#app-saju .pillars-grid { display: grid; grid-template-columns: auto repeat(4,1fr); gap: 8px; align-items: center; }
 #app-saju .pillar-col { text-align: center; }
 #app-saju .pillar-col-label { font-size: 10.5px; color: var(--ink-faint); font-family: 'Pretendard', sans-serif; margin-bottom: 6px; }
 #app-saju .pillar-col-gan { font-size: 24px; line-height: 1.3; font-weight: 700; }
 #app-saju .pillar-col-zhi { font-size: 24px; line-height: 1.3; font-weight: 700; }
+#app-saju .pillar-row-label-col {
+    display: flex; flex-direction: column; gap: 4px;
+    padding-top: 22px;
+  }
+#app-saju .pillar-row-label-col span {
+    font-size: 11px; color: var(--ink-soft); font-family: 'Pretendard', sans-serif;
+    height: 30px; display: flex; align-items: center;
+  }
 #app-saju .saved-saju-meta { margin-top: 12px; font-size: 11.5px; color: var(--ink-faint); text-align: center; font-family: 'Pretendard', sans-serif; }
 #app-saju .error-msg {
     color: var(--vermilion); font-size: 12px; margin-top: 6px;
@@ -641,6 +658,26 @@
     text-transform: uppercase; margin: 28px 4px 10px;
     font-family: 'Pretendard', sans-serif; font-weight: 600;
   }
+#app-progressed summary.section-title {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+#app-progressed summary.section-title::-webkit-details-marker { display: none; }
+#app-progressed summary.section-title::after {
+    content: '▾';
+    font-size: 11px;
+    color: var(--ink-faint);
+    transition: transform 0.2s;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+#app-progressed details.planet-details[open] summary.section-title::after { transform: rotate(180deg); }
+#app-progressed details.planet-details { margin: 0; }
+#app-progressed details.planet-details + details.planet-details { margin-top: 0; }
 #app-progressed .planet-table {
     background: var(--panel); border-radius: var(--radius); overflow: hidden;
     border: 1px solid var(--line);
@@ -905,14 +942,20 @@
         </div>
       </div>
 
-      <div class="section-title">네이탈 행성</div>
-      <div class="planet-table" id="natalTable"></div>
+      <details class="planet-details" open>
+        <summary class="section-title">네이탈 행성</summary>
+        <div class="planet-table" id="natalTable"></div>
+      </details>
 
-      <div class="section-title">프로그레스드 행성</div>
-      <div class="planet-table" id="progTable"></div>
+      <details class="planet-details" open>
+        <summary class="section-title">프로그레스드 행성</summary>
+        <div class="planet-table" id="progTable"></div>
+      </details>
 
-      <div class="section-title">프로그레스드 → 네이탈 애스펙트</div>
-      <div class="aspect-list" id="aspectList"></div>
+      <details class="planet-details" open>
+        <summary class="section-title">프로그레스드 → 네이탈 애스펙트</summary>
+        <div class="aspect-list" id="aspectList"></div>
+      </details>
     </div>
   </div>
 
@@ -1312,7 +1355,7 @@ function compareTwoPillars(ganA, zhiA, ganB, zhiB) {
 }
 
 function analyzeRelations(userPillars, todayGanIdx, todayZhiIdx) {
-  const labels = {year:'년주', month:'월주', day:'일주', time:'시주'};
+  const labels = {year:'연주', month:'월주', day:'일주', time:'시주'};
   const out = [];
   for (const key of ['time','day','month','year']) {
     if (!userPillars[key]) continue;
@@ -1442,6 +1485,7 @@ function analyzeRelations(userPillars, todayGanIdx, todayZhiIdx) {
       <div class="my-saju-mini">
         <div class="my-saju-mini-title">내 사주</div>
         <div class="my-saju-mini-grid">
+          <div class="my-saju-mini-label-col"><span>천간</span><span>지지</span></div>
           <div class="my-saju-mini-col">
             <div class="my-saju-mini-label">시주</div>
             ${p.time ? `<div class="my-saju-mini-gan">${ganSpan(p.time.gan)}</div><div class="my-saju-mini-zhi">${zhiSpan(p.time.zhi)}</div>` : `<div style="color:var(--ink-faint);font-size:12px;margin-top:8px;">미상</div>`}
@@ -1457,7 +1501,7 @@ function analyzeRelations(userPillars, todayGanIdx, todayZhiIdx) {
             <div class="my-saju-mini-zhi">${zhiSpan(p.month.zhi)}</div>
           </div>
           <div class="my-saju-mini-col">
-            <div class="my-saju-mini-label">년주</div>
+            <div class="my-saju-mini-label">연주</div>
             <div class="my-saju-mini-gan">${ganSpan(p.year.gan)}</div>
             <div class="my-saju-mini-zhi">${zhiSpan(p.year.zhi)}</div>
           </div>
@@ -1583,10 +1627,11 @@ function analyzeRelations(userPillars, todayGanIdx, todayZhiIdx) {
           <button id="editSajuBtn">다시 입력</button>
         </div>
         <div class="pillars-grid">
+          <div class="pillar-row-label-col"><span>천간</span><span>지지</span></div>
           ${p.time ? `<div class="pillar-col"><div class="pillar-col-label">시주</div><div class="pillar-col-gan">${ganSpan(p.time.gan)}</div><div class="pillar-col-zhi">${zhiSpan(p.time.zhi)}</div></div>` : `<div class="pillar-col"><div class="pillar-col-label">시주</div><div class="pillar-col-gan" style="color:var(--ink-faint);font-size:14px;">미상</div></div>`}
           <div class="pillar-col"><div class="pillar-col-label">일주</div><div class="pillar-col-gan">${ganSpan(p.day.gan)}</div><div class="pillar-col-zhi">${zhiSpan(p.day.zhi)}</div></div>
           <div class="pillar-col"><div class="pillar-col-label">월주</div><div class="pillar-col-gan">${ganSpan(p.month.gan)}</div><div class="pillar-col-zhi">${zhiSpan(p.month.zhi)}</div></div>
-          <div class="pillar-col"><div class="pillar-col-label">년주</div><div class="pillar-col-gan">${ganSpan(p.year.gan)}</div><div class="pillar-col-zhi">${zhiSpan(p.year.zhi)}</div></div>
+          <div class="pillar-col"><div class="pillar-col-label">연주</div><div class="pillar-col-gan">${ganSpan(p.year.gan)}</div><div class="pillar-col-zhi">${zhiSpan(p.year.zhi)}</div></div>
         </div>
         <div class="saved-saju-meta">${meta}</div>
       </div>
