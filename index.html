@@ -2681,9 +2681,21 @@ function createAstroApp(opts) {
       }
       bindEvents();
     } catch (err) {
-      console.error('[' + (idSuffix || 'progressed') + '] init 실패:', err);
-      try { el('welcome').style.display = 'flex'; } catch(e2) {}
+      const tag = idSuffix || '(프로그레스드)';
+      console.error('[' + tag + '] init 실패:', err);
+      showErrorOnScreen('init', err);
     }
+  }
+
+  function showErrorOnScreen(stage, err) {
+    try {
+      const scrollAreaEl = el('scrollArea');
+      if (!scrollAreaEl) return;
+      const box = document.createElement('div');
+      box.style.cssText = 'margin:20px;padding:16px;background:#3a1414;border:1px solid #b06a6a;border-radius:10px;color:#f0c8c8;font-family:monospace;font-size:12px;white-space:pre-wrap;word-break:break-all;';
+      box.textContent = '[' + (idSuffix || 'progressed') + ' / ' + stage + ' 단계 오류]\n' + (err && err.stack ? err.stack : String(err));
+      scrollAreaEl.prepend(box);
+    } catch (e2) {}
   }
 
   function showMain() {
@@ -2852,6 +2864,7 @@ function createAstroApp(opts) {
       loadMemoIntoBox();
     } catch (err) {
       console.error('[' + (idSuffix || 'progressed') + '] renderAll 실패:', err);
+      showErrorOnScreen('renderAll', err);
     }
   }
 
@@ -3005,6 +3018,17 @@ function computeTransitChart(birthDate, lat, lon, targetDate) {
 }
 
 // ===== 인스턴스 생성 =====
+function showInstanceError(label, scrollAreaId, err) {
+  try {
+    const scrollAreaEl = document.getElementById(scrollAreaId);
+    if (!scrollAreaEl) return;
+    const box = document.createElement('div');
+    box.style.cssText = 'margin:20px;padding:16px;background:#3a1414;border:1px solid #b06a6a;border-radius:10px;color:#f0c8c8;font-family:monospace;font-size:12px;white-space:pre-wrap;word-break:break-all;';
+    box.textContent = '[' + label + ' 인스턴스 생성 실패]\n' + (err && err.stack ? err.stack : String(err));
+    scrollAreaEl.prepend(box);
+  } catch (e2) {}
+}
+
 try {
   createAstroApp({
     idSuffix: '',
@@ -3015,6 +3039,7 @@ try {
   });
 } catch (err) {
   console.error('프로그레스드 인스턴스 생성 실패:', err);
+  showInstanceError('프로그레스드', 'scrollArea', err);
 }
 
 try {
@@ -3027,6 +3052,7 @@ try {
   });
 } catch (err) {
   console.error('트랜짓 인스턴스 생성 실패:', err);
+  showInstanceError('트랜짓', 'scrollAreaT', err);
 }
 
 </script>
