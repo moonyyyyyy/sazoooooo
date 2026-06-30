@@ -5,6 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#f7f2e7" id="themeColorMeta">
 <title>일진 다이어리</title>
+<script>
+  // ===== 전역 진단용 에러 핸들러: 어떤 JS 에러든 화면에 직접 표시한다 =====
+  (function() {
+    var errorLog = [];
+    function renderErrorOverlay() {
+      var existing = document.getElementById('__globalErrorOverlay');
+      if (existing) existing.remove();
+      if (errorLog.length === 0) return;
+      var box = document.createElement('div');
+      box.id = '__globalErrorOverlay';
+      box.style.cssText = 'position:fixed;left:0;right:0;bottom:0;max-height:50vh;overflow:auto;' +
+        'background:#2a0a0a;color:#ffb3b3;font-family:monospace;font-size:11px;' +
+        'padding:12px;z-index:999999;white-space:pre-wrap;word-break:break-all;border-top:3px solid #ff4444;';
+      box.textContent = '[전역 JS 에러 ' + errorLog.length + '건]\n\n' + errorLog.join('\n\n---\n\n');
+      document.body.appendChild(box);
+    }
+    window.addEventListener('error', function(e) {
+      var msg = e.message || String(e.error);
+      var loc = (e.filename || '') + ':' + (e.lineno || '?') + ':' + (e.colno || '?');
+      var stack = e.error && e.error.stack ? e.error.stack : '(스택 없음)';
+      errorLog.push(msg + '\n위치: ' + loc + '\n' + stack);
+      if (document.body) renderErrorOverlay();
+      else document.addEventListener('DOMContentLoaded', renderErrorOverlay);
+    });
+    window.addEventListener('unhandledrejection', function(e) {
+      errorLog.push('(Promise rejection) ' + (e.reason && e.reason.stack ? e.reason.stack : String(e.reason)));
+      if (document.body) renderErrorOverlay();
+    });
+  })();
+</script>
 <style>
   @font-face {
     font-family: 'Gowun Batang';
