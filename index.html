@@ -88,6 +88,74 @@
   [data-root-theme="dark"] .theme-opt-btn { color: #8b8a8f; }
   [data-root-theme="dark"] .theme-opt-btn.active { background: #1a1d27; color: #c9a86a; }
 
+  #backupBtn {
+    background: none;
+    border: none;
+    width: 30px; height: 28px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #8a7d65;
+    flex-shrink: 0;
+  }
+  [data-root-theme="dark"] #backupBtn { color: #8b8a8f; }
+
+  #backupModal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 60;
+  }
+  #backupModal.open { display: flex; }
+  #backupSheet {
+    position: relative;
+    width: 100%; max-width: 480px;
+    background: #fbf8f0;
+    border-radius: 18px 18px 0 0;
+    padding: 22px 20px calc(26px + env(safe-area-inset-bottom));
+    font-family: 'Pretendard', -apple-system, sans-serif;
+  }
+  [data-root-theme="dark"] #backupSheet { background: #1a1d27; }
+  #backupSheet h2 {
+    font-size: 15px; margin: 0 0 8px; color: #3a3326;
+  }
+  [data-root-theme="dark"] #backupSheet h2 { color: #e8e4d8; }
+  #backupDesc {
+    font-size: 12.5px; color: #8a7d65; line-height: 1.6; margin: 0 0 18px;
+  }
+  [data-root-theme="dark"] #backupDesc { color: #8b8a8f; }
+  #closeBackupModal {
+    position: absolute; top: 16px; right: 16px;
+    background: none; border: none; font-size: 18px; color: #8a7d65; cursor: pointer;
+  }
+  [data-root-theme="dark"] #closeBackupModal { color: #8b8a8f; }
+  #exportBtn, #importLabel {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #a8843f;
+    color: #fbf8f0;
+    border: none;
+    border-radius: 10px;
+    padding: 13px;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+  #importLabel {
+    background: none;
+    border: 1px solid rgba(58,51,38,0.2);
+    color: #8a7d65;
+  }
+  [data-root-theme="dark"] #importLabel { border-color: rgba(232,225,210,0.2); color: #8b8a8f; }
+  #backupStatus {
+    font-size: 12px; color: #8a7d65; text-align: center; margin-top: 10px; min-height: 16px;
+  }
+  [data-root-theme="dark"] #backupStatus { color: #8b8a8f; }
+
   /* ---------- 앱 컨테이너 전환 ---------- */
   #appSlot { flex: 1; min-height: 0; position: relative; }
   .app-container {
@@ -355,7 +423,7 @@
   }
 #app-saju .char-count { font-size: 11px; color: var(--ink-faint); }
 #app-saju textarea#memo {
-    width: 100%; min-height: 170px;
+    width: 100%; min-height: 100px;
     background: var(--paper-card);
     border: 1px solid var(--line-strong);
     border-radius: 10px;
@@ -396,14 +464,14 @@
 #app-saju .form-group { margin-bottom: 16px; }
 #app-saju .form-label { font-size: 12px; color: var(--ink-soft); margin-bottom: 6px; font-family: 'Pretendard', sans-serif; }
 #app-saju .form-row { display: flex; gap: 8px; }
-#app-saju .form-row > 
+#app-saju .form-row > * { flex: 1; }
 
-  input[type="number"], #app-saju select {
+#app-saju input[type="number"], #app-saju select {
     width: 100%;
     background: var(--paper-card);
     border: 1px solid var(--line-strong);
     border-radius: 8px;
-    padding: 11px 10px;
+    padding: 9px 10px;
     font-size: 15px;
     color: var(--ink);
     font-family: 'Pretendard', sans-serif;
@@ -609,7 +677,7 @@
     padding: 14px 14px 10px;
   }
 #app-progressed #memoText {
-    width: 100%; min-height: 96px; resize: vertical;
+    width: 100%; min-height: 64px; resize: vertical;
     background: transparent; border: none; color: var(--ink);
     font-size: 14px; line-height: 1.6; font-family: 'Pretendard', sans-serif;
     outline: none; padding: 0;
@@ -700,10 +768,23 @@
     <button class="root-tab-btn active" data-app="saju">사주 다이어리</button>
     <button class="root-tab-btn" data-app="progressed">프로그레스드</button>
   </div>
+  <button id="backupBtn" title="메모 백업/복원">⇅</button>
   <div id="themeToggleGroup">
     <button class="theme-opt-btn" data-theme-choice="light" title="라이트">☀</button>
     <button class="theme-opt-btn" data-theme-choice="dark" title="다크">☾</button>
     <button class="theme-opt-btn active" data-theme-choice="system" title="시스템">◐</button>
+  </div>
+</div>
+
+<div id="backupModal">
+  <div id="backupSheet">
+    <button id="closeBackupModal" aria-label="닫기">✕</button>
+    <h2>메모 백업 / 복원</h2>
+    <p id="backupDesc">사주 다이어리와 프로그레스드의 메모, 내 사주, 출생 정보를 파일 하나로 내보내거나 불러올 수 있다.</p>
+    <button id="exportBtn">파일로 내보내기</button>
+    <label id="importLabel" for="importFileInput">파일 불러오기</label>
+    <input type="file" id="importFileInput" accept="application/json" style="display:none;">
+    <div id="backupStatus"></div>
   </div>
 </div>
 
@@ -946,6 +1027,115 @@
       btn.classList.add('active');
       document.getElementById('app-' + btn.dataset.app).classList.add('active');
     });
+  });
+
+  // ===== 메모 백업 / 복원 =====
+  const SAJU_MEMO_KEY = 'iljin-diary-memos';
+  const SAJU_PROFILE_KEY = 'iljin-diary-myeongli';
+  const PROG_BIRTH_KEY = 'progressed_birthdata_v1';
+  const PROG_MEMO_PREFIX = 'progressed_memo_';
+
+  function collectBackupData() {
+    const data = {
+      exportedAt: new Date().toISOString(),
+      version: 1,
+      saju: { memos: null, profile: null },
+      progressed: { birthData: null, memos: {} }
+    };
+    try {
+      const raw = localStorage.getItem(SAJU_MEMO_KEY);
+      if (raw) data.saju.memos = JSON.parse(raw);
+    } catch(e) {}
+    try {
+      const raw = localStorage.getItem(SAJU_PROFILE_KEY);
+      if (raw) data.saju.profile = JSON.parse(raw);
+    } catch(e) {}
+    try {
+      const raw = localStorage.getItem(PROG_BIRTH_KEY);
+      if (raw) data.progressed.birthData = JSON.parse(raw);
+    } catch(e) {}
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.indexOf(PROG_MEMO_PREFIX) === 0) {
+          data.progressed.memos[key.slice(PROG_MEMO_PREFIX.length)] = localStorage.getItem(key);
+        }
+      }
+    } catch(e) {}
+    return data;
+  }
+
+  function restoreBackupData(data) {
+    if (!data || typeof data !== 'object') throw new Error('파일 형식을 인식할 수 없다.');
+    if (data.saju) {
+      if (data.saju.memos) localStorage.setItem(SAJU_MEMO_KEY, JSON.stringify(data.saju.memos));
+      if (data.saju.profile) localStorage.setItem(SAJU_PROFILE_KEY, JSON.stringify(data.saju.profile));
+    }
+    if (data.progressed) {
+      if (data.progressed.birthData) localStorage.setItem(PROG_BIRTH_KEY, JSON.stringify(data.progressed.birthData));
+      if (data.progressed.memos) {
+        Object.keys(data.progressed.memos).forEach(dateKey => {
+          localStorage.setItem(PROG_MEMO_PREFIX + dateKey, data.progressed.memos[dateKey]);
+        });
+      }
+    }
+  }
+
+  const backupBtn = document.getElementById('backupBtn');
+  const backupModal = document.getElementById('backupModal');
+  const closeBackupModal = document.getElementById('closeBackupModal');
+  const exportBtn = document.getElementById('exportBtn');
+  const importFileInput = document.getElementById('importFileInput');
+  const backupStatus = document.getElementById('backupStatus');
+
+  backupBtn.addEventListener('click', () => {
+    backupStatus.textContent = '';
+    backupModal.classList.add('open');
+  });
+  closeBackupModal.addEventListener('click', () => backupModal.classList.remove('open'));
+  backupModal.addEventListener('click', (e) => {
+    if (e.target === backupModal) backupModal.classList.remove('open');
+  });
+
+  exportBtn.addEventListener('click', () => {
+    try {
+      const data = collectBackupData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const dateStr = new Date().toISOString().slice(0,10);
+      a.href = url;
+      a.download = `memo-backup-${dateStr}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      backupStatus.textContent = '내보내기 완료.';
+    } catch(e) {
+      backupStatus.textContent = '내보내기 중 오류가 발생했다.';
+    }
+  });
+
+  importFileInput.addEventListener('change', () => {
+    const file = importFileInput.files && importFileInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        restoreBackupData(data);
+        backupStatus.textContent = '복원 완료. 화면을 새로고침한다.';
+        setTimeout(() => location.reload(), 900);
+      } catch(e) {
+        backupStatus.textContent = '복원에 실패했다: ' + (e.message || '파일을 확인한다.');
+      }
+      importFileInput.value = '';
+    };
+    reader.onerror = () => {
+      backupStatus.textContent = '파일을 읽는 중 오류가 발생했다.';
+      importFileInput.value = '';
+    };
+    reader.readAsText(file);
   });
 })();
 </script>
