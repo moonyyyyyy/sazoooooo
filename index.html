@@ -2672,13 +2672,18 @@ function createAstroApp(opts) {
 
   // ===================== Init =====================
   function init() {
-    birthData = loadBirthData();
-    if (!birthData) {
-      el('welcome').style.display = 'flex';
-    } else {
-      showMain();
+    try {
+      birthData = loadBirthData();
+      if (!birthData) {
+        el('welcome').style.display = 'flex';
+      } else {
+        showMain();
+      }
+      bindEvents();
+    } catch (err) {
+      console.error('[' + (idSuffix || 'progressed') + '] init 실패:', err);
+      try { el('welcome').style.display = 'flex'; } catch(e2) {}
     }
-    bindEvents();
   }
 
   function showMain() {
@@ -2831,19 +2836,23 @@ function createAstroApp(opts) {
   // ===================== Render =====================
   function renderAll() {
     if (!birthData) return;
-    const birthDate = new Date(birthData.birthUTC);
-    const chart = computeFn(birthDate, birthData.lat, birthData.lon, viewDate);
-    currentChart = chart;
+    try {
+      const birthDate = new Date(birthData.birthUTC);
+      const chart = computeFn(birthDate, birthData.lat, birthData.lon, viewDate);
+      currentChart = chart;
 
-    el('dateLabel').innerHTML =
-      `${formatDateLabel(viewDate)}<span class="sub">만 ${chart.ageYears.toFixed(1)}세 진행</span>`;
-    el('ageDisplay').textContent = birthData.label || '';
+      el('dateLabel').innerHTML =
+        `${formatDateLabel(viewDate)}<span class="sub">만 ${chart.ageYears.toFixed(1)}세 진행</span>`;
+      el('ageDisplay').textContent = birthData.label || '';
 
-    renderWheel(chart);
-    renderPlanetTable(id('natalTable'), chart.natal.planets, chart.natal.houses.cusps);
-    renderPlanetTable(id('progTable'), chart.progressed.planets, chart.natal.houses.cusps);
-    renderAspects(chart.aspects.progToNatal);
-    loadMemoIntoBox();
+      renderWheel(chart);
+      renderPlanetTable(id('natalTable'), chart.natal.planets, chart.natal.houses.cusps);
+      renderPlanetTable(id('progTable'), chart.progressed.planets, chart.natal.houses.cusps);
+      renderAspects(chart.aspects.progToNatal);
+      loadMemoIntoBox();
+    } catch (err) {
+      console.error('[' + (idSuffix || 'progressed') + '] renderAll 실패:', err);
+    }
   }
 
   function renderPlanetTable(elId, planets, cusps) {
@@ -2996,21 +3005,29 @@ function computeTransitChart(birthDate, lat, lon, targetDate) {
 }
 
 // ===== 인스턴스 생성 =====
-createAstroApp({
-  idSuffix: '',
-  storageKey: 'progressed_birthdata_v1',
-  memoKeyPrefix: 'progressed_memo_',
-  computeFn: computeChart,
-  secondaryLabel: 'progressed',
-});
+try {
+  createAstroApp({
+    idSuffix: '',
+    storageKey: 'progressed_birthdata_v1',
+    memoKeyPrefix: 'progressed_memo_',
+    computeFn: computeChart,
+    secondaryLabel: 'progressed',
+  });
+} catch (err) {
+  console.error('프로그레스드 인스턴스 생성 실패:', err);
+}
 
-createAstroApp({
-  idSuffix: 'T',
-  storageKey: 'transit_birthdata_v1',
-  memoKeyPrefix: 'transit_memo_',
-  computeFn: computeTransitChart,
-  secondaryLabel: 'transit',
-});
+try {
+  createAstroApp({
+    idSuffix: 'T',
+    storageKey: 'transit_birthdata_v1',
+    memoKeyPrefix: 'transit_memo_',
+    computeFn: computeTransitChart,
+    secondaryLabel: 'transit',
+  });
+} catch (err) {
+  console.error('트랜짓 인스턴스 생성 실패:', err);
+}
 
 </script>
 
