@@ -2894,10 +2894,22 @@ function createAstroApp(opts) {
   }
 
   // ===================== Render =====================
+  // 저장된 birthUTC(파생값)를 신뢰하지 않고, 원본 dateISO/timeStr/tz에서 매번 UTC를 재계산한다.
+  // (과거 버전에서 타임존 보정 없이 저장된 잘못된 birthUTC로 인한 오류를 방지)
+  function computeBirthUTC(bd) {
+    if (bd.dateISO && bd.timeStr != null && bd.tz != null) {
+      const [y, mo, d] = bd.dateISO.split('-').map(Number);
+      const [hh, mm] = (bd.timeStr || '12:00').split(':').map(Number);
+      const ms = Date.UTC(y, mo - 1, d, hh, mm) - Number(bd.tz) * 3600000;
+      return new Date(ms);
+    }
+    return new Date(bd.birthUTC);
+  }
+
   function renderAll() {
     if (!birthData) return;
     try {
-      const birthDate = new Date(birthData.birthUTC);
+      const birthDate = computeBirthUTC(birthData);
       const chart = computeFn(birthDate, birthData.lat, birthData.lon, viewDate);
       currentChart = chart;
 
