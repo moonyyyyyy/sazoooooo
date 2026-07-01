@@ -2957,7 +2957,7 @@ function createAstroApp(opts) {
     function angleForLon(lon) {
       let rel = lon - ascLon;
       rel = ((rel % 360) + 360) % 360;
-      const screenDeg = 180 - rel;
+      const screenDeg = 180 + rel;
       return screenDeg * Math.PI / 180;
     }
     function pt(r, lon) {
