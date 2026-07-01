@@ -699,7 +699,7 @@
     list-style: none;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     user-select: none;
   }
 #app-progressed summary.section-title::-webkit-details-marker { display: none; }
@@ -710,6 +710,7 @@
     transition: transform 0.2s;
     text-transform: none;
     letter-spacing: 0;
+    margin-left: 6px;
   }
 #app-progressed details.planet-details[open] summary.section-title::after { transform: rotate(180deg); }
 #app-progressed details.planet-details { margin: 0; }
@@ -933,7 +934,7 @@
     list-style: none;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     user-select: none;
   }
 #app-transit summary.section-title::-webkit-details-marker { display: none; }
@@ -944,6 +945,7 @@
     transition: transform 0.2s;
     text-transform: none;
     letter-spacing: 0;
+    margin-left: 6px;
   }
 #app-transit details.planet-details[open] summary.section-title::after { transform: rotate(180deg); }
 #app-transit details.planet-details { margin: 0; }
@@ -1411,6 +1413,7 @@
     document.documentElement.setAttribute('data-root-theme', resolved);
     document.getElementById('app-saju').setAttribute('data-theme', resolved);
     document.getElementById('app-progressed').setAttribute('data-theme', resolved);
+    document.getElementById('app-transit').setAttribute('data-theme', resolved);
     const metaTag = document.getElementById('themeColorMeta');
     if (metaTag) metaTag.setAttribute('content', resolved === 'dark' ? '#0c0d12' : '#f7f2e7');
 
