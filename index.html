@@ -2475,7 +2475,9 @@ function d2r(x) { return x * Math.PI / 180; }
 function r2d(x) { return x * 180 / Math.PI; }
 
 function obliquity(date) {
-  const T = (Astronomy.MakeTime(date).tt) / 36525;
+  // J2000.0 기준 율리우스 세기(T)를 직접 계산 (astronomy-engine 비의존)
+  const JD = date.getTime() / 86400000 + 2440587.5;
+  const T = (JD - 2451545.0) / 36525;
   return (23.4392911 - 0.0130042 * T - 0.00000016 * T * T + 0.000000504 * T * T * T) * Math.PI / 180;
 }
 
@@ -2545,11 +2547,22 @@ function iterate23(RAMC, E, L, seedOffset, F) {
   return RA;
 }
 
+// GMST(그리니치 항성시, 시간 단위)를 Meeus 표준 공식으로 직접 계산.
+// astronomy-engine의 SiderealTime에 의존하지 않아 모든 브라우저에서 동일한 결과를 보장한다.
+function gmstHours(date) {
+  const JD = date.getTime() / 86400000 + 2440587.5;
+  const T = (JD - 2451545.0) / 36525;
+  let GMSTdeg = 280.46061837 + 360.98564736629 * (JD - 2451545.0)
+    + 0.000387933 * T * T - (T * T * T) / 38710000;
+  GMSTdeg = ((GMSTdeg % 360) + 360) % 360;
+  return GMSTdeg / 15;
+}
+
 // lat: degrees (signed, + = N, - = S). Returns null for houses if beyond polar limits (rare, falls back gracefully).
 function getPlacidusHouses(date, lat, lon) {
   const E = obliquity(date);
   const L = d2r(lat);
-  const gst = Astronomy.SiderealTime(date);
+  const gst = gmstHours(date);
   const RAMC = norm360((gst + lon / 15) * 15);
 
   const asc = ascFromRAMC(RAMC, E, L);
