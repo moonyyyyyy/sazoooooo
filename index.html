@@ -1277,9 +1277,9 @@
     <button id="saveBtn">저장하고 보기</button>
   </div>
 </div>
+  </div>
 
-
-  <div class="app-container" id="app-transit">
+<div class="app-container" id="app-transit">
 
 
   <header>
@@ -1387,8 +1387,6 @@
   </div>
 </div>
 
-
-  </div>
 
   </div>
 </div>
@@ -2682,12 +2680,15 @@ function createAstroApp(opts) {
     return `${y}-${m}-${day}`;
   }
   function loadMemo(d) {
-    return localStorage.getItem(memoKeyPrefix + dateKey(d)) || '';
+    try { return localStorage.getItem(memoKeyPrefix + dateKey(d)) || ''; }
+    catch (e) { return ''; }
   }
   function saveMemo(d, text) {
-    const key = memoKeyPrefix + dateKey(d);
-    if (text.trim() === '') localStorage.removeItem(key);
-    else localStorage.setItem(key, text);
+    try {
+      const key = memoKeyPrefix + dateKey(d);
+      if (text.trim() === '') localStorage.removeItem(key);
+      else localStorage.setItem(key, text);
+    } catch (e) {}
   }
 
   function loadBirthData() {
@@ -2697,7 +2698,8 @@ function createAstroApp(opts) {
     } catch (e) { return null; }
   }
   function saveBirthData(data) {
-    localStorage.setItem(storageKey, JSON.stringify(data));
+    try { localStorage.setItem(storageKey, JSON.stringify(data)); }
+    catch (e) {}
   }
 
   // ===================== Init =====================
@@ -2884,7 +2886,7 @@ function createAstroApp(opts) {
       currentChart = chart;
 
       el('dateLabel').innerHTML =
-        `${formatDateLabel(viewDate)}<span class="sub">만 ${chart.ageYears.toFixed(1)}세 진행</span>`;
+        `${formatDateLabel(viewDate)}<span class="sub">만 ${chart.ageYears.toFixed(1)}세 · ${secondaryLabel}</span>`;
       el('ageDisplay').textContent = birthData.label || '';
 
       renderWheel(chart);
@@ -3065,7 +3067,7 @@ try {
     storageKey: 'progressed_birthdata_v1',
     memoKeyPrefix: 'progressed_memo_',
     computeFn: computeChart,
-    secondaryLabel: 'progressed',
+    secondaryLabel: '프로그레스드',
   });
 } catch (err) {
   console.error('프로그레스드 인스턴스 생성 실패:', err);
@@ -3078,7 +3080,7 @@ try {
     storageKey: 'transit_birthdata_v1',
     memoKeyPrefix: 'transit_memo_',
     computeFn: computeTransitChart,
-    secondaryLabel: 'transit',
+    secondaryLabel: '트랜짓',
   });
 } catch (err) {
   console.error('트랜짓 인스턴스 생성 실패:', err);
