@@ -589,6 +589,134 @@
 
 </style>
 <style>
+/* ===== 지금 하늘 컴포넌트 스타일 (#app-sky 스코프) ===== */
+#app-sky {
+    --bg: #0c0d12;
+    --bg-deep: #07080b;
+    --panel: #14161e;
+    --panel-raised: #1a1d27;
+    --ink: #e8e4d8;
+    --ink-dim: #8b8a8f;
+    --ink-faint: #55545c;
+    --gold: #c9a86a;
+    --gold-bright: #e8c98a;
+    --sky: #c9a86a;
+    --line: #2a2c38;
+    --radius: 14px;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    overflow: hidden;
+    width: 100%; height: 100%;
+    background: var(--bg); color: var(--ink);
+  }
+#app-sky[data-theme="light"] {
+    --bg: #ffffff;
+    --bg-deep: #ffffff;
+    --panel: #f7f7f8;
+    --panel-raised: #f0f0f2;
+    --ink: #2a2a2e;
+    --ink-dim: #77777e;
+    --ink-faint: #a8a8b0;
+    --gold: #a8843f;
+    --gold-bright: #8a6c2f;
+    --sky: #a8843f;
+    --line: rgba(40,40,45,0.16);
+  }
+#app-sky header {
+    flex-shrink: 0;
+    padding: 18px 20px 14px;
+    display: flex; align-items: baseline; justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+  }
+#app-sky header h1 {
+    font-size: 17px; font-weight: 600; letter-spacing: 0.04em;
+    margin: 0; color: var(--ink);
+  }
+#app-sky header .age {
+    font-size: 12px; color: var(--ink-dim); font-family: 'Pretendard', sans-serif;
+  }
+#app-sky #skyRefreshBtn {
+    background: none; border: none; color: var(--ink-faint);
+    font-size: 18px; padding: 4px 8px; cursor: pointer;
+  }
+#app-sky #skyScrollArea {
+    flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding: 20px 16px 40px;
+  }
+#app-sky #skyDateLabel {
+    text-align: center; font-size: 14px; color: var(--ink);
+    margin-bottom: 18px; font-family: 'Pretendard', -apple-system, sans-serif;
+  }
+#app-sky #skyDateLabel .sub { display: block; font-size: 11px; color: var(--ink-faint); margin-top: 2px; }
+#app-sky #skyWheelWrap { display: flex; justify-content: center; margin: 0 auto 22px; }
+#app-sky #skyWheelSvg { width: 100%; max-width: 480px; height: auto; touch-action: pan-y; }
+#app-sky .sky-legend {
+    display: flex; justify-content: center; gap: 22px; margin-bottom: 26px;
+    font-size: 12px; color: var(--ink-dim); font-family: 'Pretendard', sans-serif;
+  }
+#app-sky .sky-legend span { display: inline-flex; align-items: center; gap: 6px; }
+#app-sky .dot.sky { width: 9px; height: 9px; border-radius: 50%; display: inline-block; background: var(--sky); }
+#app-sky summary.section-title {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    user-select: none;
+    font-size: 12px; letter-spacing: 0.12em; color: var(--gold);
+    text-transform: uppercase; margin: 4px 4px 10px;
+    font-family: 'Pretendard', sans-serif; font-weight: 600;
+  }
+#app-sky summary.section-title::-webkit-details-marker { display: none; }
+#app-sky summary.section-title::after {
+    content: '▾';
+    font-size: 11px;
+    color: var(--ink-faint);
+    transition: transform 0.2s;
+    text-transform: none;
+    letter-spacing: 0;
+    margin-left: 6px;
+  }
+#app-sky details.planet-details[open] summary.section-title::after { transform: rotate(180deg); }
+#app-sky .planet-table {
+    background: var(--panel); border-radius: var(--radius); overflow: hidden;
+    border: 1px solid var(--line);
+  }
+#app-sky .planet-row {
+    display: grid; grid-template-columns: 28px 1fr 1fr;
+    align-items: center; padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px; font-family: 'Pretendard', sans-serif;
+  }
+#app-sky .planet-row:last-child { border-bottom: none; }
+#app-sky .planet-row .sym { font-size: 16px; color: var(--ink-dim); text-align: center; }
+#app-sky .planet-row .name { color: var(--ink-dim); font-size: 12px; }
+#app-sky .planet-row .pos { color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+#app-sky .planet-row.retro .pos::after { content: ' ℞'; color: var(--sky); font-size: 10px; }
+#app-sky .section-title {
+    font-size: 12px; letter-spacing: 0.12em; color: var(--gold);
+    text-transform: uppercase; margin: 28px 4px 10px;
+    font-family: 'Pretendard', sans-serif; font-weight: 600;
+  }
+#app-sky #skyMemoBox {
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 14px 14px 10px;
+  }
+#app-sky #skyMemoText {
+    width: 100%; min-height: 64px; resize: vertical;
+    background: transparent; border: none; color: var(--ink);
+    font-size: 14px; line-height: 1.6; font-family: 'Pretendard', sans-serif;
+    outline: none; padding: 0;
+  }
+#app-sky #skyMemoText::placeholder { color: var(--ink-faint); }
+#app-sky .memo-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line);
+    font-size: 11px; color: var(--ink-faint); font-family: 'Pretendard', sans-serif;
+  }
+#app-sky #skyMemoStatus { transition: opacity 0.3s; }
+#app-sky #skyMemoStatus.fade { opacity: 0; }
+
 /* ===== 프로그레스드 컴포넌트 스타일 (#app-progressed 스코프) ===== */
 
   @font-face {
@@ -1081,6 +1209,7 @@
 <div id="rootBar">
   <div id="appTabs">
     <button class="root-tab-btn active" data-app="saju">사주 일진</button>
+    <button class="root-tab-btn" data-app="sky">지금 하늘</button>
     <button class="root-tab-btn" data-app="transit">트랜짓 차트</button>
     <button class="root-tab-btn" data-app="progressed">프로그레스드 차트</button>
   </div>
@@ -1182,6 +1311,39 @@
 
 
   </div>
+
+  <div class="app-container" id="app-sky">
+  <header>
+    <h1>지금 하늘</h1>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <button id="skyRefreshBtn" aria-label="새로고침">↻</button>
+    </div>
+  </header>
+
+  <div id="skyScrollArea">
+    <div id="skyDateLabel"></div>
+    <div id="skyWheelWrap">
+      <svg id="skyWheelSvg" viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="sky-legend">
+      <span><span class="dot sky"></span>현재 행성 위치</span>
+    </div>
+
+    <details class="planet-details" id="skyPlanetDetails">
+      <summary class="section-title">행성 위치</summary>
+      <div class="planet-table" id="skyPlanetTable"></div>
+    </details>
+
+    <div class="section-title">오늘의 기록</div>
+    <div id="skyMemoBox">
+      <textarea id="skyMemoText" placeholder="오늘의 메모를 남겨보세요..."></textarea>
+      <div class="memo-footer">
+        <span id="skyMemoStatus">&nbsp;</span>
+        <span id="skyMemoCount">0자</span>
+      </div>
+    </div>
+  </div>
+</div>
 
   <div class="app-container" id="app-progressed">
 
@@ -1425,6 +1587,7 @@
     document.getElementById('app-saju').setAttribute('data-theme', resolved);
     document.getElementById('app-progressed').setAttribute('data-theme', resolved);
     document.getElementById('app-transit').setAttribute('data-theme', resolved);
+    document.getElementById('app-sky').setAttribute('data-theme', resolved);
     const metaTag = document.getElementById('themeColorMeta');
     if (metaTag) metaTag.setAttribute('content', resolved === 'dark' ? '#0c0d12' : '#ffffff');
 
@@ -1474,6 +1637,7 @@
   const PROG_MEMO_PREFIX = 'progressed_memo_';
   const TRANSIT_BIRTH_KEY = 'transit_birthdata_v1';
   const TRANSIT_MEMO_PREFIX = 'transit_memo_';
+  const SKY_MEMO_PREFIX = 'sky_memo_';
 
   function collectBackupData() {
     const data = {
@@ -1481,7 +1645,8 @@
       version: 2,
       saju: { memos: null, profile: null },
       progressed: { birthData: null, memos: {} },
-      transit: { birthData: null, memos: {} }
+      transit: { birthData: null, memos: {} },
+      sky: { memos: {} }
     };
     try {
       const raw = localStorage.getItem(SAJU_MEMO_KEY);
@@ -1506,6 +1671,8 @@
           data.progressed.memos[key.slice(PROG_MEMO_PREFIX.length)] = localStorage.getItem(key);
         } else if (key && key.indexOf(TRANSIT_MEMO_PREFIX) === 0) {
           data.transit.memos[key.slice(TRANSIT_MEMO_PREFIX.length)] = localStorage.getItem(key);
+        } else if (key && key.indexOf(SKY_MEMO_PREFIX) === 0) {
+          data.sky.memos[key.slice(SKY_MEMO_PREFIX.length)] = localStorage.getItem(key);
         }
       }
     } catch(e) {}
@@ -1533,6 +1700,11 @@
           localStorage.setItem(TRANSIT_MEMO_PREFIX + dateKey, data.transit.memos[dateKey]);
         });
       }
+    }
+    if (data.sky && data.sky.memos) {
+      Object.keys(data.sky.memos).forEach(dateKey => {
+        localStorage.setItem(SKY_MEMO_PREFIX + dateKey, data.sky.memos[dateKey]);
+      });
     }
   }
 
@@ -3086,6 +3258,176 @@ function computeTransitChart(birthDate, lat, lon, targetDate) {
     },
   };
 }
+
+// ===== 지금 하늘: 출생정보 없이 현재 시각의 행성 위치만 보여주는 단일 링 차트 =====
+// 위치는 서울(37.5665, 126.978)로 고정한다.
+(function initSkyApp() {
+  const SKY_LAT = 37.5665, SKY_LON = 126.978;
+  const SKY_MEMO_PREFIX = 'sky_memo_';
+  const svg = document.getElementById('skyWheelSvg');
+  const dateLabelEl = document.getElementById('skyDateLabel');
+  const tableEl = document.getElementById('skyPlanetTable');
+  const memoTextEl = document.getElementById('skyMemoText');
+  const memoStatusEl = document.getElementById('skyMemoStatus');
+  const memoCountEl = document.getElementById('skyMemoCount');
+  if (!svg) return;
+
+  let skyMemoSaveTimer = null;
+
+  function skyDateKey(d) {
+    const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+  }
+  function loadSkyMemo(d) {
+    try { return localStorage.getItem(SKY_MEMO_PREFIX + skyDateKey(d)) || ''; }
+    catch (e) { return ''; }
+  }
+  function saveSkyMemo(d, text) {
+    try {
+      const key = SKY_MEMO_PREFIX + skyDateKey(d);
+      if (text.trim() === '') localStorage.removeItem(key);
+      else localStorage.setItem(key, text);
+    } catch (e) {}
+  }
+  function loadSkyMemoIntoBox() {
+    if (!memoTextEl) return;
+    const text = loadSkyMemo(new Date());
+    memoTextEl.value = text;
+    memoCountEl.textContent = `${text.length}자`;
+    memoStatusEl.textContent = '\u00a0';
+    memoStatusEl.classList.add('fade');
+  }
+  function onSkyMemoInput() {
+    const text = memoTextEl.value;
+    memoCountEl.textContent = `${text.length}자`;
+    memoStatusEl.classList.remove('fade');
+    memoStatusEl.textContent = '저장 중...';
+    clearTimeout(skyMemoSaveTimer);
+    skyMemoSaveTimer = setTimeout(() => {
+      saveSkyMemo(new Date(), text);
+      memoStatusEl.textContent = '저장됨';
+      memoStatusEl.classList.add('fade');
+    }, 500);
+  }
+  function flushSkyMemoSave() {
+    if (!memoTextEl) return;
+    clearTimeout(skyMemoSaveTimer);
+    saveSkyMemo(new Date(), memoTextEl.value);
+  }
+  if (memoTextEl) {
+    memoTextEl.addEventListener('input', onSkyMemoInput);
+    window.addEventListener('beforeunload', flushSkyMemoSave);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') flushSkyMemoSave();
+    });
+  }
+
+  function formatSkyLabel(d) {
+    const days = ['일','월','화','수','목','금','토'];
+    return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} (${days[d.getDay()]}) ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+
+  function renderSkyPlanetTable(planets, cusps) {
+    tableEl.innerHTML = planets.map(p => {
+      const house = houseOfLongitude(p.lon, cusps);
+      const signIdx = Math.floor(p.lon / 30);
+      const deg = (p.lon - signIdx * 30).toFixed(1);
+      return `<div class="planet-row${p.retrograde ? ' retro' : ''}">
+        <span class="sym">${p.symbol}</span>
+        <span class="name">${p.name}</span>
+        <span class="pos">${ZODIAC_SIGNS[signIdx].symbol} ${deg}° · ${house}H</span>
+      </div>`;
+    }).join('');
+  }
+
+  function renderSkyWheel(planets, cusps) {
+    const cx = 240, cy = 240;
+    const rOuterEdge = 230, rZodiac = 215, rZodiacIn = 192;
+    const rHouseLine = 165, rPlanetRing = 140, rCore = 60;
+    const ascLon = cusps[1];
+
+    function angleForLon(lon) {
+      let rel = ((lon - ascLon) % 360 + 360) % 360;
+      return (180 + rel) * Math.PI / 180;
+    }
+    function pt(r, lon) {
+      const a = angleForLon(lon);
+      return [cx + r * Math.cos(a), cy - r * Math.sin(a)];
+    }
+
+    let parts = [];
+    parts.push(`<circle cx="${cx}" cy="${cy}" r="${rOuterEdge}" fill="none" stroke="var(--line)" stroke-width="1"/>`);
+    parts.push(`<circle cx="${cx}" cy="${cy}" r="${rZodiac}" fill="none" stroke="var(--line)" stroke-width="1"/>`);
+    parts.push(`<circle cx="${cx}" cy="${cy}" r="${rZodiacIn}" fill="none" stroke="var(--line)" stroke-width="1"/>`);
+    parts.push(`<circle cx="${cx}" cy="${cy}" r="${rHouseLine}" fill="none" stroke="var(--line)" stroke-width="0.6"/>`);
+    parts.push(`<circle cx="${cx}" cy="${cy}" r="${rCore}" fill="none" stroke="var(--line)" stroke-width="1"/>`);
+
+    for (let i = 0; i < 12; i++) {
+      const lon = i * 30;
+      const [x1,y1] = pt(rZodiacIn, lon);
+      const [x2,y2] = pt(rZodiac, lon);
+      parts.push(`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`);
+      const [sx, sy] = pt((rZodiac+rZodiacIn)/2, lon + 15);
+      parts.push(`<text x="${sx.toFixed(1)}" y="${sy.toFixed(1)}" text-anchor="middle" dominant-baseline="central" font-size="13" fill="var(--gold)" opacity="0.85">${ZODIAC_SIGNS[i].symbol}</text>`);
+    }
+
+    for (let h = 1; h <= 12; h++) {
+      const lon = cusps[h];
+      const isAngular = (h === 1 || h === 4 || h === 7 || h === 10);
+      const [x1,y1] = pt(rCore, lon);
+      const [x2,y2] = pt(rHouseLine, lon);
+      parts.push(`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--ink-faint)" stroke-width="${isAngular?1.4:0.6}" opacity="${isAngular?0.9:0.45}"/>`);
+      const nextLon = cusps[h === 12 ? 1 : h + 1];
+      const span = ((nextLon - lon) % 360 + 360) % 360;
+      const [lx, ly] = pt(rCore - 14, lon + span / 2);
+      parts.push(`<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dominant-baseline="central" font-size="9" fill="var(--ink-faint)">${h}</text>`);
+    }
+
+    const skySelfAspects = findAspects(planets, planets, true)
+      .filter(a => a.aspect.kind !== 'neutral' && a.orb < 4);
+    skySelfAspects.forEach(a => {
+      const [x1,y1] = pt(rCore, a.a.lon);
+      const [x2,y2] = pt(rCore, a.b.lon);
+      const color = a.aspect.kind === 'soft' ? 'var(--aspect-soft, #6f9b7c)' : 'var(--aspect-hard, #b06a6a)';
+      parts.push(`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="0.7" opacity="0.4"/>`);
+    });
+
+    planets.forEach(p => {
+      const [x,y] = pt(rPlanetRing, p.lon);
+      parts.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="11" fill="var(--bg)" stroke="var(--sky)" stroke-width="1.2"/>`);
+      parts.push(`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="central" font-size="12" fill="var(--sky)">${p.symbol}</text>`);
+    });
+
+    parts.push(`<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" font-size="10" fill="var(--ink-faint)" font-family="Pretendard, sans-serif">서울</text>`);
+
+    svg.innerHTML = parts.join('\n');
+  }
+
+  function renderSky() {
+    try {
+      const now = new Date();
+      const planets = getPlanetPositions(now);
+      const houses = getPlacidusHouses(now, SKY_LAT, SKY_LON);
+      planets.forEach(p => { p.house = houseOfLongitude(p.lon, houses.cusps); });
+
+      dateLabelEl.innerHTML = `${formatSkyLabel(now)}<span class="sub">서울 기준</span>`;
+      renderSkyWheel(planets, houses.cusps);
+      renderSkyPlanetTable(planets, houses.cusps);
+    } catch (err) {
+      console.error('[지금 하늘] 렌더 실패:', err);
+    }
+  }
+
+  loadSkyMemoIntoBox();
+  renderSky();
+  const refreshBtn = document.getElementById('skyRefreshBtn');
+  if (refreshBtn) refreshBtn.addEventListener('click', renderSky);
+
+  // 앱 전환으로 지금 하늘 탭에 진입할 때마다 최신 시각으로 갱신
+  document.querySelectorAll('.root-tab-btn').forEach(btn => {
+    if (btn.dataset.app === 'sky') btn.addEventListener('click', renderSky);
+  });
+})();
 
 // ===== 인스턴스 생성 =====
 function showInstanceError(label, scrollAreaId, err) {
